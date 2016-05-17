@@ -1,0 +1,35 @@
+
+SRCDIR := src
+TBDIR := tbench
+TARGET := main.exe
+
+SRCEXT := v
+RTLSRC := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT)) 
+TBSRC  := $(shell find $(TBDIR) -type f -name *.$(SRCEXT))
+
+COMP_OPTS :=
+SIM_OPTS :=
+
+ifdef DEBUG
+	SIM_OPTS := +DEBUG=1
+endif
+
+ifdef NOSTOP
+	SIM_OPTS := +NOSTOP=1
+endif
+
+all: compile run
+
+.PHONY: clean 
+clean: 
+	@echo "##### Cleaning..."; 
+	@echo " $(RM) -r $(TARGET)"; $(RM) -r $(TARGET) 
+
+compile:
+	@echo "##### Compiling RTL files ..."
+	iverilog -o $(TARGET) $(COMP_OPTS) $(RTLSRC) $(TBSRC)
+	
+run:
+	@echo "##### Running RTL simulation .."
+	vvp $(TARGET) $(SIM_OPTS)
+
