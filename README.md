@@ -4,3 +4,5 @@
 
 * Makefile.iverilog : makefile template for iVerilog
 
+* General setup : cshrc, zshrc, vimrc & gvimrc
+
