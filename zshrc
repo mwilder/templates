@@ -1,3 +1,8 @@
+if [[ -o login ]]; then
+    print Bok\ $(whoami)!
+    print You\ are\ running\ zsh\ $ZSH_VERSION!
+fi
+
 # Aliases {{{
 alias ll='ls -al'
 alias ltr='ls -ltr'
@@ -10,7 +15,7 @@ alias gvim='mvim'
 
 # General setup {{{ 
 typeset -U path
-path=($path ~/scripts ~/Applications/local/bin)
+path=($path . ~/scripts ~/Applications/local/bin)
 VISUAL=vim
 EDITOR=vim
 PROMPT="%1~ > "
@@ -29,4 +34,29 @@ setopt COMPLETE_ALIASES
 
 # Option setup {{{
 setopt auto_cd
+# }}}
+
+# Key bindings {{{
+bindkey -v
+autoload -Uz edit-command-line
+bindkey -M vicmd 'v' edit-command-line
+
+bindkey '^?' backward-delete-char
+bindkey '^h' backward-delete-char
+bindkey '^w' backward-kill-word
+bindkey "^[[3~" vi-delete-char
+
+bindkey "^A" vi-beginning-of-line
+bindkey "^E" vi-end-of-line
+
+autoload -Uz colors && colors
+function zle-line-init zle-keymap-select {
+    VIM_PROMPT="%{$fg_bold[yellow]%} [% NOR]% %{$reset_color%}"
+    RPS1="${${KEYMAP/vicmd/$VIM_PROMPT}/(main|viins)/}"
+    RPS2=$RPS1
+    zle reset-prompt
+}
+zle -N zle-line-init
+zle -N zle-keymap-select
+export KEYTIMEOUT=1
 # }}}
